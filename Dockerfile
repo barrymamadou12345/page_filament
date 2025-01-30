@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     unzip \
-&& docker-php-ext-install pdo pdo_mysql intl zip
+ && docker-php-ext-install pdo pdo_mysql intl zip
 
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -20,8 +20,14 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 RUN sed -i 's|/var/www/html|/var/www/public|g' /etc/apache2/sites-available/000-default.conf
 RUN sed -i 's|/var/www/html|/var/www/public|g' /etc/apache2/apache2.conf
 
-# Installer les dépendances et exécuter les migrations
-RUN composer install --working-dir=/var/www && php /var/www/artisan migrate --force && php /var/www/artisan db:seed --force
+# Installer les dépendances
+RUN composer install --working-dir=/var/www
+
+# Exécuter les migrations
+RUN php /var/www/artisan migrate --force
+
+# Exécuter les seeders
+RUN php /var/www/artisan db:seed --force
 
 # Configurer les permissions
 RUN chown -R www-data:www-data /var/www
