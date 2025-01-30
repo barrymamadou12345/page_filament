@@ -7,6 +7,7 @@ ENV DB_PORT=3306
 ENV DB_DATABASE=my_database
 ENV DB_USERNAME=mysql
 ENV DB_PASSWORD=RenderMysqlPassword
+ENV MYSQL_ROOT_PASSWORD=RenderMysqlRootPassword
 
 # Installation des dépendances système
 RUN apt-get update && apt-get install -y \
