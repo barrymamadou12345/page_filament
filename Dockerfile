@@ -1,12 +1,13 @@
 # Utiliser une image de base PHP avec Apache
 FROM php:8.2-apache
 
-# Installer les extensions PHP nécessaires
+# Installer les extensions PHP nécessaires et netcat
 RUN apt-get update && apt-get install -y \
     libicu-dev \
     libzip-dev \
     zip \
     unzip \
+    netcat \
 && docker-php-ext-install pdo pdo_mysql intl zip
 
 # Installer Composer
