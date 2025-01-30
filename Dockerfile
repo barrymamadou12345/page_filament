@@ -1,42 +1,42 @@
-# Utiliser une image de base PHP avec Apache
+# Dockerfile
 FROM php:8.2-apache
 
-# Installer les extensions PHP nécessaires et mysql-client
+# Installation des dépendances système
 RUN apt-get update && apt-get install -y \
     libicu-dev \
     libzip-dev \
     zip \
     unzip \
-    mysql-client \
-&& docker-php-ext-install pdo pdo_mysql intl zip
+    default-mysql-client \
+    git \
+    && docker-php-ext-install pdo pdo_mysql intl zip
 
-# Installer Composer
+# Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copier les fichiers de l'application
-COPY . /var/www
-
-# Configurer Apache pour utiliser le répertoire public de Laravel
+# Configuration d'Apache
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+RUN a2enmod rewrite
 RUN sed -i 's|/var/www/html|/var/www/public|g' /etc/apache2/sites-available/000-default.conf
 RUN sed -i 's|/var/www/html|/var/www/public|g' /etc/apache2/apache2.conf
 
-# Installer les dépendances
-RUN composer install --working-dir=/var/www
+# Copie des fichiers de l'application
+COPY . /var/www
 
-# Script pour attendre que MySQL soit prêt
+# Installation des dépendances PHP
+RUN composer install --working-dir=/var/www --no-interaction --no-dev --optimize-autoloader
+
+# Copie des scripts d'attente et de démarrage
 COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
-RUN chmod +x /usr/local/bin/wait-for-it.sh
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/wait-for-it.sh /usr/local/bin/docker-entrypoint.sh
 
-# Exécuter les migrations et seeders après avoir vérifié que MySQL est prêt
-RUN /usr/local/bin/wait-for-it.sh mysql-backend-09vk.onrender.com php /var/www/artisan migrate --force
-RUN /usr/local/bin/wait-for-it.sh mysql-backend-09vk.onrender.com php /var/www/artisan db:seed --force
-
-# Configurer les permissions
+# Configuration des permissions
 RUN chown -R www-data:www-data /var/www
+RUN chmod -R 755 /var/www/storage /var/www/bootstrap/cache
 
-# Exposer le port 80
+# Exposition du port
 EXPOSE 80
 
-# Démarrer Apache
-CMD ["apache2-foreground"]
+# Point d'entrée
+CMD ["/usr/local/bin/docker-entrypoint.sh"]
