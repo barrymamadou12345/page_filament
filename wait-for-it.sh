@@ -1,13 +1,20 @@
 # wait-for-it.sh
 #!/usr/bin/env bash
-# Script pour attendre que MySQL soit disponible
 
 set -e
 
+MAX_TRIES=30
+COUNTER=0
+
 echo "Vérification de la connexion à MySQL..."
-until mysql -h "$DB_HOST" -P "${DB_PORT:-3306}" -u "$DB_USERNAME" -p"$DB_PASSWORD" -e 'SELECT 1;' > /dev/null 2>&1; do
-  echo "MySQL n'est pas encore disponible - nouvelle tentative dans 5 secondes..."
-  sleep 5
+until mysql -h mysql-backend-09vk.onrender.com -P 3306 -u mysql -p"RenderMysqlPassword" -e 'SELECT 1;' > /dev/null 2>&1; do
+    COUNTER=$((COUNTER+1))
+    if [ $COUNTER -gt $MAX_TRIES ]; then
+        echo "Impossible de se connecter à MySQL après $MAX_TRIES tentatives. Arrêt."
+        exit 1
+    fi
+    echo "MySQL n'est pas encore disponible - tentative $COUNTER sur $MAX_TRIES..."
+    sleep 10
 done
 
 echo "MySQL est disponible !"

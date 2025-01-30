@@ -24,7 +24,7 @@ RUN sed -i 's|/var/www/html|/var/www/public|g' /etc/apache2/apache2.conf
 COPY . /var/www
 
 # Installation des dépendances PHP
-RUN composer install --working-dir=/var/www --no-interaction --no-dev --optimize-autoloader
+RUN composer install --working-dir=/var/www --no-interaction --optimize-autoloader
 
 # Copie des scripts d'attente et de démarrage
 COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
@@ -35,7 +35,7 @@ RUN chmod +x /usr/local/bin/wait-for-it.sh /usr/local/bin/docker-entrypoint.sh
 RUN chown -R www-data:www-data /var/www
 RUN chmod -R 755 /var/www/storage /var/www/bootstrap/cache
 
-# Exposition du port
+# Exposition explicite du port 80
 EXPOSE 80
 
 # Point d'entrée

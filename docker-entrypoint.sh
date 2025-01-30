@@ -2,13 +2,24 @@
 #!/bin/bash
 set -e
 
-# Attendre que MySQL soit disponible
+cd /var/www
+
+# Vérifier la connexion à MySQL
 echo "Attente de MySQL..."
 /usr/local/bin/wait-for-it.sh
 
-# Préparation de l'application
 echo "Configuration de l'application..."
-cd /var/www
+
+# Nettoyage du cache
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+# Génération de la clé si nécessaire
+if [ -z "$APP_KEY" ]; then
+    php artisan key:generate
+fi
 
 # Optimisations pour la production
 php artisan config:cache
@@ -19,15 +30,10 @@ php artisan view:cache
 echo "Exécution des migrations..."
 php artisan migrate --force
 
-# Seeders (si nécessaire)
-if [ "${RUN_SEEDER:-false}" = "true" ]; then
-    echo "Exécution des seeders..."
-    php artisan db:seed --force
-fi
+# Configuration des permissions
+chown -R www-data:www-data /var/www/storage
+chmod -R 755 /var/www/storage
 
-# Nettoyage du cache si nécessaire
-php artisan cache:clear
-
-# Démarrage d'Apache
+# Démarrage d'Apache avec le bon utilisateur
 echo "Démarrage d'Apache..."
 apache2-foreground
