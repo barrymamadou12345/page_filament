@@ -2,9 +2,9 @@ services:
   web:
     build: .
     ports:
-      - "${PORT}:80"
+      - "${PORT}:80"  # Utilise la variable d'environnement PORT
     environment:
-      - PORT=10000
+      - PORT=10000  # Définir la variable PORT pour Render
       - DB_HOST=mysql-backend-09vk.onrender.com
       - DB_PORT=3306
       - DB_DATABASE=my_database

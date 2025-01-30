@@ -34,8 +34,8 @@ RUN chmod +x /usr/local/bin/wait-for-it.sh /usr/local/bin/docker-entrypoint.sh
 RUN chown -R www-data:www-data /var/www
 RUN chmod -R 755 /var/www/storage /var/www/bootstrap/cache
 
-# Exposition explicite du port 10000
-EXPOSE 10000
+# Exposition explicite du port défini par l'environnement
+EXPOSE ${PORT}
 
 # Point d'entrée
 CMD ["/usr/local/bin/docker-entrypoint.sh"]
