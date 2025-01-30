@@ -1,13 +1,12 @@
 # Utiliser une image de base PHP avec Apache
 FROM php:8.2-apache
 
-# Installer les extensions PHP nécessaires et netcat-openbsd
+# Installer les extensions PHP nécessaires
 RUN apt-get update && apt-get install -y \
     libicu-dev \
     libzip-dev \
     zip \
     unzip \
-    netcat-openbsd \
 && docker-php-ext-install pdo pdo_mysql intl zip
 
 # Installer Composer
@@ -29,8 +28,8 @@ COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
 RUN chmod +x /usr/local/bin/wait-for-it.sh
 
 # Exécuter les migrations et seeders après avoir vérifié que MySQL est prêt
-RUN /usr/local/bin/wait-for-it.sh mysql-backend-09vk.onrender.com:3306 --timeout=60 --strict -- php /var/www/artisan migrate --force
-RUN /usr/local/bin/wait-for-it.sh mysql-backend-09vk.onrender.com:3306 --timeout=60 --strict -- php /var/www/artisan db:seed --force
+RUN /usr/local/bin/wait-for-it.sh mysql-backend-09vk.onrender.com php /var/www/artisan migrate --force
+RUN /usr/local/bin/wait-for-it.sh mysql-backend-09vk.onrender.com php /var/www/artisan db:seed --force
 
 # Configurer les permissions
 RUN chown -R www-data:www-data /var/www
