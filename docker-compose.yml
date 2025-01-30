@@ -1,17 +1,15 @@
-version: '3.1'
-
 services:
   web:
     build: .
     ports:
-      - "10000:80" # On mappe le port 10000 vers 80
+      - "10000:10000"
     environment:
       - DB_HOST=mysql-backend-09vk.onrender.com
       - DB_PORT=3306
       - DB_DATABASE=my_database
       - DB_USERNAME=mysql
       - DB_PASSWORD=RenderMysqlPassword
-      - APP_PORT=10000 # Ajout pour Laravel
+      - PORT=10000  # Ajout pour rendre Laravel compatible avec le port 10000
     depends_on:
       - db
 

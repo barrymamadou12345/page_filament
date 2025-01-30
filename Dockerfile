@@ -1,4 +1,3 @@
-# Dockerfile
 FROM php:8.2-apache
 
 # Installation des dépendances système
@@ -35,8 +34,8 @@ RUN chmod +x /usr/local/bin/wait-for-it.sh /usr/local/bin/docker-entrypoint.sh
 RUN chown -R www-data:www-data /var/www
 RUN chmod -R 755 /var/www/storage /var/www/bootstrap/cache
 
-# Exposition explicite du port 80
-EXPOSE 80
+# Exposition explicite du port 10000
+EXPOSE 10000
 
 # Point d'entrée
 CMD ["/usr/local/bin/docker-entrypoint.sh"]

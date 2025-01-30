@@ -39,12 +39,3 @@ chmod -R 755 /var/www/storage
 # Démarrage d'Apache avec le bon utilisateur
 echo "Démarrage d'Apache..."
 apache2-foreground
-
-# Vérifier que le port  est ouvert et en écoute
-echo "Vérification de la connexion à MySQL..."
-until nc -z -v -w30 "$DB_HOST" "$DB_PORT"; do
-  echo "En attente de la base de données MySQL..."
-  sleep 5
-done
-echo "Base de données accessible !"
-
