@@ -23,14 +23,13 @@ RUN sed -i 's|/var/www/html|/var/www/public|g' /etc/apache2/apache2.conf
 # Installer les dépendances
 RUN composer install --working-dir=/var/www
 
-# Déboguer l'environnement
-RUN php /var/www/artisan migrate:status
+# Script pour attendre que MySQL soit prêt
+COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
+RUN chmod +x /usr/local/bin/wait-for-it.sh
 
-# Exécuter les migrations
-RUN php /var/www/artisan migrate --force
-
-# Exécuter les seeders
-RUN php /var/www/artisan db:seed --force
+# Exécuter les migrations et seeders après avoir vérifié que MySQL est prêt
+RUN /usr/local/bin/wait-for-it.sh mysql-backend-09vk.onrender.com:3306 --timeout=60 --strict -- php /var/www/artisan migrate --force
+RUN /usr/local/bin/wait-for-it.sh mysql-backend-09vk.onrender.com:3306 --timeout=60 --strict -- php /var/www/artisan db:seed --force
 
 # Configurer les permissions
 RUN chown -R www-data:www-data /var/www
