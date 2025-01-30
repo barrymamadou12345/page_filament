@@ -7,6 +7,9 @@ cd /var/www
 echo "Attente de MySQL..."
 /usr/local/bin/wait-for-it.sh
 
+echo "Débogage : Connexion à MySQL..."
+mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME" -p"$DB_PASSWORD" -e 'SELECT 1;'
+
 echo "Configuration de l'application..."
 
 # Nettoyage du cache
