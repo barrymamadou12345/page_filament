@@ -40,11 +40,11 @@ chmod -R 755 /var/www/storage
 echo "Démarrage d'Apache..."
 apache2-foreground
 
-# Vérifier que le port 80 est ouvert et en écoute
-echo "Vérification du port 80..."
-while ! nc -z localhost 80; do   
-  echo "En attente que le port 80 soit disponible..."
-  sleep 1
+# Vérifier que le port  est ouvert et en écoute
+echo "Vérification de la connexion à MySQL..."
+until nc -z -v -w30 "$DB_HOST" "$DB_PORT"; do
+  echo "En attente de la base de données MySQL..."
+  sleep 5
 done
+echo "Base de données accessible !"
 
-echo "Le port 80 est maintenant ouvert et en écoute !"
