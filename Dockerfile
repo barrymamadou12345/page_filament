@@ -4,6 +4,7 @@ FROM php:8.2-apache
 # Installer les extensions PHP nécessaires
 RUN apt-get update && apt-get install -y \
     libicu-dev \
+    libzip-dev \
     zip \
     unzip \
 && docker-php-ext-install pdo pdo_mysql intl zip
