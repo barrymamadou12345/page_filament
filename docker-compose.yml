@@ -1,0 +1,28 @@
+version: '3.1'
+
+services:
+  web:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      - DB_HOST=nom_du_service_mysql
+      - DB_PORT=3306
+      - DB_DATABASE=nom_de_la_base_de_donnees
+      - DB_USERNAME=utilisateur
+      - DB_PASSWORD=mot_de_passe
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: mot_de_passe_root
+      MYSQL_DATABASE: nom_de_la_base_de_donnees
+      MYSQL_USER: utilisateur
+      MYSQL_PASSWORD: mot_de_passe
+
+volumes:
+  db_data:

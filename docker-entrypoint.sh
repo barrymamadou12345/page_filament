@@ -38,7 +38,7 @@ chmod -R 755 /var/www/storage
 
 # Démarrage d'Apache avec le bon utilisateur
 echo "Démarrage d'Apache..."
-apache2-foreground &
+apache2-foreground
 
 # Vérifier que le port 80 est ouvert et en écoute
 echo "Vérification du port 80..."
