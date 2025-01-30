@@ -24,8 +24,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Configuration d'Apache
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 RUN a2enmod rewrite
-RUN sed -i 's|/var/www/html|/var/www/public|g' /etc/apache2/sites-available/000-default.conf
-RUN sed -i 's|/var/www/html|/var/www/public|g' /etc/apache2/apache2.conf
+COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
+RUN a2ensite 000-default.conf
 
 # Copie des fichiers de l'application
 COPY . /var/www
