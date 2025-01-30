@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     unzip \
- && docker-php-ext-install pdo pdo_mysql intl zip
+&& docker-php-ext-install pdo pdo_mysql intl zip
 
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -22,6 +22,9 @@ RUN sed -i 's|/var/www/html|/var/www/public|g' /etc/apache2/apache2.conf
 
 # Installer les dépendances
 RUN composer install --working-dir=/var/www
+
+# Déboguer l'environnement
+RUN php /var/www/artisan migrate:status
 
 # Exécuter les migrations
 RUN php /var/www/artisan migrate --force
