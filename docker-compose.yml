@@ -1,21 +1,22 @@
-# 4. docker-compose.yml
+# 3. render.yaml
 services:
-  web:
-    build: .
-    ports:
-      - "80:80"
-    environment:
-      - APP_ENV=production
-      - DB_CONNECTION=mysql
-      - DB_HOST=mysql-backend-09vk.onrender.com
-      - DB_PORT=3306
-      - DB_DATABASE=my_database
-      - DB_USERNAME=mysql
-      - DB_PASSWORD=RenderMysqlPassword
-    volumes:
-      - ./:/var/www
-      - ./storage:/var/www/storage
-    restart: unless-stopped
-
-volumes:
-  storage:
+  - type: web
+    name: laravel-app
+    env: docker
+    dockerfilePath: ./Dockerfile
+    disk:
+      name: storage
+      mountPath: /var/www/storage
+    envVars:
+      - key: PORT
+        value: 80
+      - key: DB_HOST
+        value: mysql-backend-09vk.onrender.com
+      - key: DB_PORT
+        value: 3306
+      - key: DB_DATABASE
+        value: my_database
+      - key: DB_USERNAME
+        value: mysql
+      - key: DB_PASSWORD
+        value: RenderMysqlPassword
