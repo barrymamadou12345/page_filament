@@ -1,29 +1,21 @@
+# 4. docker-compose.yml
 services:
   web:
     build: .
     ports:
-      - "${PORT}:80"  # Utilise la variable d'environnement PORT
+      - "80:80"
     environment:
-      - PORT=10000  # Définir la variable PORT pour Render
+      - APP_ENV=production
+      - DB_CONNECTION=mysql
       - DB_HOST=mysql-backend-09vk.onrender.com
       - DB_PORT=3306
       - DB_DATABASE=my_database
       - DB_USERNAME=mysql
       - DB_PASSWORD=RenderMysqlPassword
-    depends_on:
-      - db
-
-  db:
-    image: mysql:5.7
-    ports:
-      - "3306:3306"
     volumes:
-      - db_data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: RenderMysqlPassword
-      MYSQL_DATABASE: my_database
-      MYSQL_USER: mysql
-      MYSQL_PASSWORD: RenderMysqlPassword
+      - ./:/var/www
+      - ./storage:/var/www/storage
+    restart: unless-stopped
 
 volumes:
-  db_data:
+  storage:
