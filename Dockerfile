@@ -13,13 +13,18 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copier les fichiers de l'application
-COPY . /var/www/html
+COPY . /var/www
+
+# Configurer Apache pour utiliser le répertoire public de Laravel
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+RUN sed -i 's|/var/www/html|/var/www/public|g' /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's|/var/www/html|/var/www/public|g' /etc/apache2/apache2.conf
 
 # Installer les dépendances
-RUN composer install
+RUN composer install --working-dir=/var/www
 
 # Configurer les permissions
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www
 
 # Exposer le port 80
 EXPOSE 80
